@@ -11,6 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <Button
+            android:id="@+id/sampleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ボタンだよ"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <!-- 普段のViewを設定する -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -23,9 +33,15 @@
         android:orientation="vertical"
         app:behavior_hideable="false"
         app:behavior_peekHeight="56dp"
-        app:layout_behavior="@string/bottom_sheet_behavior">
+        app:layout_behavior=".CustomBottomSheetBehavior">
 
         <!-- BottomSheetに表示したいViewを設定する -->
+        <TextView
+            android:id="@+id/headerTextView"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/red"
+            android:text="Textだよ"/>
 
     </LinearLayout>
 
