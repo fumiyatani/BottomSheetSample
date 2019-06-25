@@ -51,7 +51,7 @@ class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet)
     override fun onSingleTapUp(motionEvent: MotionEvent): Boolean {
         // 指が画面に押下され、画面から指が離れると呼び出される
         customBottomSheetCallback.isFling = false
-        customBottomSheetCallback.isTouch = true
+        customBottomSheetCallback.isTapped = true
         return false
     }
 
@@ -76,18 +76,18 @@ class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet)
     ): Boolean {
         // 画面から指が加速度を付いた状態で話されると呼び出される。
         customBottomSheetCallback.isFling = true
-        customBottomSheetCallback.isTouch = false
+        customBottomSheetCallback.isTapped = false
         return false
     }
 
     internal inner class CustomBottomSheetCallback<T : View>(private val bottomSheetBehavior: CustomBottomSheetBehavior<T>) :
         BottomSheetBehavior.BottomSheetCallback() {
 
-        // Touchのイベントを検知するためのフラグ
+        // タップのイベントを検知するためのフラグ
         // 初期はfalse
-        var isTouch = false
+        var isTapped = false
 
-        // Touchのイベントを検知するためのフラグ
+        // フリックのイベントを検知するためのフラグ
         // 初期はfalse
         var isFling = false
 
@@ -95,9 +95,9 @@ class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet)
 
         override fun onStateChanged(view: View, state: Int) {
             if (state == STATE_COLLAPSED) {
-                if (isTouch && !isFling && offset < 0.1) {
+                if (isTapped && !isFling && offset < 0.1) {
                     bottomSheetBehavior.state = STATE_EXPANDED
-                    isTouch = false
+                    isTapped = false
                 }
             }
         }
