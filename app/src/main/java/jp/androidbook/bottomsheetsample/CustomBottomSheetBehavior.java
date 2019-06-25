@@ -29,12 +29,16 @@ public class CustomBottomSheetBehavior<T extends View> extends BottomSheetBehavi
         // 画面上のタッチ発生位置
         float touchEventScreenY = event.getY();
 
-        // BottomSheetBehavior のタッチイベントの位置
-        float touchEventBottomSheetY = child.getY();
+        // BottomSheetBehavior の位置
+        float bottomSheetY = child.getY();
 
-        // BottomSheet は peekHeight の状態だと画面の下にいるので、
-        // BottomSheet 以下の場合は背後の View にイベントを伝播させないようにtrueを返却する
-        return touchEventScreenY > touchEventBottomSheetY;
+        // BottomSheetBehavior の位置に 56dp を足すことによって
+        // HeaderViewの高さ出している
+        float headerViewHeight = bottomSheetY + Util.convertDp2Px(56.0f, parent.getContext());
+
+        // BottomSheet 内の HeaderView をタッチしているかを判定している
+        // もし HeaderView の範囲内であれば BottomSheet にタッチイベントを渡すようにしている
+        return touchEventScreenY < bottomSheetY && touchEventScreenY > headerViewHeight;
     }
 
     @Override

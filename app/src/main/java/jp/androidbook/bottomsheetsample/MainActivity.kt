@@ -1,6 +1,7 @@
 package jp.androidbook.bottomsheetsample
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,8 +24,12 @@ class MainActivity : AppCompatActivity(), BottomSheetRecyclerViewAdapter.ListTap
         // CoordinatorLayoutのChildViewとして設定しているものを設定する
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout) as CustomBottomSheetBehavior
 
+        sampleButton.setOnClickListener {
+            Log.d(TAG, "ボタンタップ")
+        }
+
         val list = ArrayList<String>()
-        for (i in 0 .. 30) {
+        for (i in 0 .. 180) {
             list.add("テキスト $i")
         }
         recyclerView.adapter = BottomSheetRecyclerViewAdapter(list, this)
