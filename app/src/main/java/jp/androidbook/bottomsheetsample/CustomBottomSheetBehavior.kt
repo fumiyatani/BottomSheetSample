@@ -5,8 +5,6 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet) :
@@ -20,35 +18,6 @@ class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet)
         customBottomSheetCallback = CustomBottomSheetCallback(this)
         this.setBottomSheetCallback(customBottomSheetCallback)
         gestureDetector = GestureDetector(context, this)
-    }
-
-
-    override fun onInterceptTouchEvent(
-        parent: CoordinatorLayout,
-        child: T,
-        event: MotionEvent
-    ): Boolean {
-        // フリック操作かタップ操作を判定するためのGestureDetectorにeventを渡す。
-        gestureDetector.onTouchEvent(event)
-        // 画面上のタッチ発生位置
-        val touchEventY = event.y
-
-        // BottomSheetBehavior の位置
-        val bottomSheetY = child.y
-
-        // BottomSheetBehavior の位置に HeaderView の高さの 56dp を足すことによって
-        // HeaderViewの高さとしている
-        val headerViewHeight = bottomSheetY + Util.convertDp2Px(56.0f, parent.context)
-
-        // BottomSheet 内の HeaderView をタッチしているかを判定している
-        // もし HeaderView の範囲内であれば BottomSheet にタッチイベントを渡すようにしている
-        return touchEventY > bottomSheetY && touchEventY < headerViewHeight
-    }
-
-    override fun onTouchEvent(parent: CoordinatorLayout, child: T, event: MotionEvent): Boolean {
-        // フリック操作かタップ操作を判定するためのGestureDetectorにeventを渡す。
-        gestureDetector.onTouchEvent(event)
-        return super.onTouchEvent(parent, child, event)
     }
 
     override fun onDown(motionEvent: MotionEvent): Boolean {
