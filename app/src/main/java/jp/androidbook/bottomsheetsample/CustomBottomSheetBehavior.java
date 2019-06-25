@@ -11,9 +11,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
-/*
-https://blog.k3n.link/entry/lockable-bottom-sheet-behavior
-*/
 public class CustomBottomSheetBehavior<T extends View> extends BottomSheetBehavior<T> implements GestureDetector.OnGestureListener {
 
     private CustomBottomSheetCallback<T> customBottomSheetCallback;
@@ -108,7 +105,6 @@ public class CustomBottomSheetBehavior<T extends View> extends BottomSheetBehavi
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                     isTouch = false;
                 }
-
             }
         }
 
