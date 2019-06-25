@@ -33,7 +33,7 @@ class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet)
 
         // BottomSheetBehavior の位置に HeaderView の高さの 56dp を足すことによって
         // HeaderViewの高さとしている
-        val headerViewHeight = bottomSheetY + Util.convertDp2Px(56.toFloat(), parent.context)
+        val headerViewHeight = bottomSheetY + Util.convertDp2Px(56.0f, parent.context)
 
         // BottomSheet 内の HeaderView をタッチしているかを判定している
         // もし HeaderView の範囲内であれば BottomSheet にタッチイベントを渡すようにしている
