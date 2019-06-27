@@ -38,11 +38,19 @@ class MainActivity : AppCompatActivity(), BottomSheetRecyclerViewAdapter.ListTap
 
         headerTextView.setOnTouchListener { _, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
-                Log.d(TAG, "テキストタップ")
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             }
             return@setOnTouchListener true
         }
+
+        bottomSheetBehavior.setupCallback(object : CustomBottomSheetBehavior.BottomSheetStateChangeListener {
+            override fun changeBottomSheetState(state: Int) {
+                when(state) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> headerTextView.text = "Collapsed"
+                    BottomSheetBehavior.STATE_EXPANDED -> headerTextView.text = "Expanded"
+                }
+            }
+        })
     }
 
     override fun onClickList(text: String) {

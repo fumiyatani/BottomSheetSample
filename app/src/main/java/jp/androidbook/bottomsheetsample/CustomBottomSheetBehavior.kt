@@ -10,14 +10,18 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet) :
     BottomSheetBehavior<T>(context, attrs), GestureDetector.OnGestureListener {
 
-    private val customBottomSheetCallback: CustomBottomSheetCallback<T>
+    private lateinit var customBottomSheetCallback: CustomBottomSheetCallback<T>
 
-    private val gestureDetector: GestureDetector
+    // 上下スワイプを検知するために必要
+    private val gestureDetector: GestureDetector = GestureDetector(context, this)
 
-    init {
-        customBottomSheetCallback = CustomBottomSheetCallback(this)
+    interface BottomSheetStateChangeListener {
+        fun changeBottomSheetState(state: Int)
+    }
+
+    fun setupCallback(listener: BottomSheetStateChangeListener) {
+        customBottomSheetCallback = CustomBottomSheetCallback(this, listener)
         this.setBottomSheetCallback(customBottomSheetCallback)
-        gestureDetector = GestureDetector(context, this)
     }
 
     override fun onDown(motionEvent: MotionEvent): Boolean {
@@ -60,7 +64,7 @@ class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet)
         return false
     }
 
-    internal inner class CustomBottomSheetCallback<T : View>(private val bottomSheetBehavior: CustomBottomSheetBehavior<T>) :
+    internal inner class CustomBottomSheetCallback<T : View>(private val bottomSheetBehavior: CustomBottomSheetBehavior<T>, private val listener: BottomSheetStateChangeListener) :
         BottomSheetBehavior.BottomSheetCallback() {
 
         // タップのイベントを検知するためのフラグ
@@ -78,7 +82,12 @@ class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet)
                 if (isTapped && !isFling && offset < 0.1) {
                     bottomSheetBehavior.state = STATE_EXPANDED
                     isTapped = false
+                    return
                 }
+                listener.changeBottomSheetState(STATE_COLLAPSED)
+            }
+            if(state == STATE_EXPANDED) {
+                listener.changeBottomSheetState(STATE_EXPANDED)
             }
         }
 

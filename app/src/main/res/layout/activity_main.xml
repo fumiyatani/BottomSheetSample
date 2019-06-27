@@ -9,7 +9,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/green">
 
         <Button
             android:id="@+id/sampleButton"
@@ -21,6 +22,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/bottom_sheet_background_drawable" />
+
         <!-- 普段のViewを設定する -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -29,17 +42,29 @@
         android:id="@+id/bottomSheetLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bottom_sheet_drawable"
+        android:background="@drawable/bottom_sheet_background_drawable"
+        android:elevation="5dp"
         app:behavior_hideable="false"
         app:behavior_peekHeight="56dp"
         app:layout_behavior=".CustomBottomSheetBehavior">
 
         <!-- BottomSheetに表示したいViewを設定する -->
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/bottom_sheet_handle_drawable"/>
+
         <TextView
             android:id="@+id/headerTextView"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:background="@android:color/transparent"
+            android:gravity="center_horizontal|center_vertical"
             android:text="Textだよ"
             android:textAlignment="center"
             android:textAllCaps="false"
