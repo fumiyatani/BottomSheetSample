@@ -2,19 +2,19 @@ package jp.androidbook.bottomsheetsample
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
-class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet) :
+class CustomBottomSheetBehavior<T : View>(private val context: Context, attrs: AttributeSet) :
     BottomSheetBehavior<T>(context, attrs), GestureDetector.OnGestureListener {
 
     private lateinit var customBottomSheetCallback: CustomBottomSheetCallback<T>
 
-    // 上下スワイプを検知するために必要
-    private val gestureDetector: GestureDetector = GestureDetector(context, this)
-
+    private val  gestureDetector = GestureDetector(context, this)
     interface BottomSheetStateChangeListener {
         fun changeBottomSheetState(state: Int)
     }
@@ -22,6 +22,11 @@ class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet)
     fun setupCallback(listener: BottomSheetStateChangeListener) {
         customBottomSheetCallback = CustomBottomSheetCallback(this, listener)
         this.setBottomSheetCallback(customBottomSheetCallback)
+    }
+
+    override fun onTouchEvent(parent: CoordinatorLayout, child: T, event: MotionEvent): Boolean {
+        gestureDetector.onTouchEvent(event)
+        return super.onTouchEvent(parent, child, event)
     }
 
     override fun onDown(motionEvent: MotionEvent): Boolean {
@@ -33,9 +38,7 @@ class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet)
     }
 
     override fun onSingleTapUp(motionEvent: MotionEvent): Boolean {
-        // 指が画面に押下され、画面から指が離れると呼び出される
-        customBottomSheetCallback.isFling = false
-        customBottomSheetCallback.isTapped = true
+        state = STATE_EXPANDED
         return false
     }
 
@@ -58,36 +61,62 @@ class CustomBottomSheetBehavior<T : View>(context: Context, attrs: AttributeSet)
         v: Float,
         v1: Float
     ): Boolean {
-        // 画面から指が加速度を付いた状態で話されると呼び出される。
-        customBottomSheetCallback.isFling = true
-        customBottomSheetCallback.isTapped = false
+        // フリックの方向を取得する
+        if(motionEvent.y < motionEvent1.y) {
+            // 上スワイプ
+            Log.d("onFling", "下スワイプ")
+            customBottomSheetCallback.directFling = DirectFling.Down
+        } else {
+            Log.d("onFling", "上スワイプ")
+            customBottomSheetCallback.directFling = DirectFling.UP
+        }
         return false
+    }
+
+    enum class DirectFling {
+        UP, Down
     }
 
     internal inner class CustomBottomSheetCallback<T : View>(private val bottomSheetBehavior: CustomBottomSheetBehavior<T>, private val listener: BottomSheetStateChangeListener) :
         BottomSheetBehavior.BottomSheetCallback() {
 
-        // タップのイベントを検知するためのフラグ
-        // 初期はfalse
-        var isTapped = false
+        // 4(Collapsed) or 3(Expanded) or 6(Half_Expanded)
+        var preState = 4
 
-        // フリックのイベントを検知するためのフラグ
-        // 初期はfalse
-        var isFling = false
+        var directFling: DirectFling? = null
 
         private var offset: Float = 0.toFloat()
 
         override fun onStateChanged(view: View, state: Int) {
-            if (state == STATE_COLLAPSED) {
-                if (isTapped && !isFling && offset < 0.1) {
-                    bottomSheetBehavior.state = STATE_EXPANDED
-                    isTapped = false
-                    return
+            if(state == STATE_SETTLING) {
+                when(preState) {
+                    STATE_COLLAPSED -> {
+                        if (directFling == DirectFling.UP) {
+                            bottomSheetBehavior.state = STATE_HALF_EXPANDED
+                        }
+                    }
+
+                    STATE_EXPANDED -> {
+                        if (directFling == DirectFling.Down) {
+                            bottomSheetBehavior.state = STATE_HALF_EXPANDED
+                        }
+                    }
                 }
+
+            }
+
+            if (state == STATE_COLLAPSED) {
+                preState = STATE_COLLAPSED
                 listener.changeBottomSheetState(STATE_COLLAPSED)
             }
             if(state == STATE_EXPANDED) {
+                preState = STATE_EXPANDED
                 listener.changeBottomSheetState(STATE_EXPANDED)
+            }
+
+            if (state == STATE_HALF_EXPANDED) {
+                preState = STATE_HALF_EXPANDED
+                listener.changeBottomSheetState(STATE_HALF_EXPANDED)
             }
         }
 

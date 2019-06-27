@@ -1,8 +1,6 @@
 package jp.androidbook.bottomsheetsample
 
 import android.os.Bundle
-import android.util.Log
-import android.view.MotionEvent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -15,8 +13,6 @@ class MainActivity : AppCompatActivity(), BottomSheetRecyclerViewAdapter.ListTap
 
     private lateinit var bottomSheetBehavior: CustomBottomSheetBehavior<ConstraintLayout>
 
-    private val TAG: String = "MainActivity"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,7 +22,7 @@ class MainActivity : AppCompatActivity(), BottomSheetRecyclerViewAdapter.ListTap
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout) as CustomBottomSheetBehavior
 
         sampleButton.setOnClickListener {
-            Log.d(TAG, "ボタンタップ")
+            Toast.makeText(this@MainActivity, "ボタンタップ", Toast.LENGTH_SHORT).show()
         }
 
         val list = ArrayList<String>()
@@ -36,18 +32,12 @@ class MainActivity : AppCompatActivity(), BottomSheetRecyclerViewAdapter.ListTap
         recyclerView.adapter = BottomSheetRecyclerViewAdapter(list, this)
         recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
 
-        headerTextView.setOnTouchListener { _, motionEvent ->
-            if (motionEvent.action == MotionEvent.ACTION_UP) {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            }
-            return@setOnTouchListener true
-        }
-
         bottomSheetBehavior.setupCallback(object : CustomBottomSheetBehavior.BottomSheetStateChangeListener {
             override fun changeBottomSheetState(state: Int) {
                 when(state) {
                     BottomSheetBehavior.STATE_COLLAPSED -> headerTextView.text = "Collapsed"
                     BottomSheetBehavior.STATE_EXPANDED -> headerTextView.text = "Expanded"
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> headerTextView.text = "Half_Expanded"
                 }
             }
         })
